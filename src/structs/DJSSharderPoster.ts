@@ -43,7 +43,7 @@ export class DJSSharderPoster extends BasePoster implements BasePosterInterface 
 
   public waitForReady(fn: () => void) {
     const listener = (shard) => {
-      if (shard.id !== (this.client.totalShards as number) - 1) return
+      if (shard.id !== (this.client.shard.count as number) - 1) return
 
       this.client.off('shardCreate', listener)
       shard.once('ready', () => {
@@ -54,7 +54,7 @@ export class DJSSharderPoster extends BasePoster implements BasePosterInterface 
   }
 
   public async getStats (): Promise<BotStats> {
-    const response = await this.client.fetchClientValues('guilds.cache.size')
+    const response = await this.client.fetchClientValues('guilds.size')
     return {
       serverCount: response.reduce((a, b) => a + b, 0),
       shardCount: response.length
